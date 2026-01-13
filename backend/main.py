@@ -140,22 +140,36 @@ def predict(
         tips = []
         if weather["rainfall"] > 20:
             tips.append("Heavy rain expected. Avoid sowing today.")
+        if weather["rainfall"] < 5:
+            tips.append("Very low rainfall. Schedule irrigation within 24 hours.")
         if weather["temperature"] > 35:
             tips.append("High temperature. Water the crops adequately.")
+        if weather["temp_min"] < 10:
+            tips.append("Cool nights expected. Consider mulching to retain soil warmth.")
         if weather_pred in ['rain', 'drizzle']:
             tips.append("Rainy weather predicted. Ensure proper drainage.")
         if weather["humidity"] < 40:
             tips.append("Low humidity. Consider irrigation.")
+        if weather["humidity"] > 85:
+            tips.append("Very high humidity. Increase field airflow to reduce disease risk.")
+        if weather["wind"] > 10:
+            tips.append("High winds expected. Stake young plants and secure tunnels.")
         
         # Soil-based tips
         if nitrogen < 30:
             tips.append("Nitrogen level is low. Apply nitrogen-rich fertilizers.")
         if phosphorus < 20:
             tips.append("Phosphorus level is low. Consider phosphate fertilizers.")
+        if potassium < 25:
+            tips.append("Potassium is low. Add muriate of potash before irrigation.")
         if ph < 6:
             tips.append("Soil is acidic. Apply lime to increase pH.")
         elif ph > 7.5:
             tips.append("Soil is alkaline. Apply sulfur to decrease pH.")
+        if soil_type.lower() in ["sandy", "silt"]:
+            tips.append("Light soil. Use organic mulches to improve moisture retention.")
+        if soil_type.lower() in ["clayey", "peaty"]:
+            tips.append("Heavy soil. Avoid waterlogging and loosen top layer before sowing.")
 
         return {
             "city": city,
