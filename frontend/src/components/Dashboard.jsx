@@ -65,7 +65,7 @@ function Dashboard() {
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Welcome to AgriSmart</h1>
+        <h1 className="dashboard-title">Welcome to SahayaKisan</h1>
         <p className="dashboard-subtitle">
           Get AI-powered crop recommendations and weather predictions
         </p>
