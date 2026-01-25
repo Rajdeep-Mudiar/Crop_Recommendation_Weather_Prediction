@@ -115,6 +115,26 @@
   transform: scale(0.95);
 }
 
+.search-clear-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: 2px solid #d1d5db;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-clear-btn:hover {
+  background: #ffffff;
+}
+
 /* Soil Form Section */
 .soil-form-section {
   background: white;
@@ -122,11 +142,13 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 32px;
   margin-bottom: 32px;
-  border-top: 4px solid #f97316;
-  animation: fadeIn 0.4s ease-out;
-}
-
-.soil-form-header {
+  /* Desktop: WeatherCard left, CropCard right */
+  @media (min-width: 1024px) {
+    .results-section {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -365,9 +387,37 @@
   gap: 24px;
   animation: fadeIn 0.5s ease-out;
 }
-
+/* Make the header row (Search Again button) span both columns */
+.results-header {
+  grid-column: 1 / -1;
+}
+/* Side-by-side on large screens */
 @media (min-width: 1024px) {
   .results-section {
     grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
+}
+
+/* Search Again Button */
+.search-again-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-again-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(118, 75, 162, 0.35);
 }
