@@ -48,6 +48,20 @@ function Dashboard() {
     }
   };
 
+  const handleSearchAgain = () => {
+    setCity("");
+    setData(null);
+    setError(null);
+    setShowSoilForm(false);
+    setSoilData({
+      nitrogen: 40,
+      phosphorus: 60,
+      potassium: 40,
+      ph: 6.5,
+      soilType: "loamy",
+    });
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !showSoilForm) {
       setShowSoilForm(true);
@@ -255,6 +269,26 @@ function Dashboard() {
       {/* Results Section */}
       {data && (
         <div className="results-section">
+          {/* Search Again Button */}
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={handleSearchAgain}
+              className="search-button"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                padding: "12px 32px",
+                fontSize: "16px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <span>🔍</span>
+              Search Another City
+            </button>
+          </div>
+
           {/* Error Message */}
           {error && (
             <div className="bg-red-50 border-l-8 border-red-500 text-red-800 p-6 rounded-xl mb-8 shadow-lg animate-fadeIn">
