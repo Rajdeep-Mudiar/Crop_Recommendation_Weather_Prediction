@@ -99,6 +99,19 @@ function Dashboard() {
               onKeyPress={handleKeyPress}
               className="search-input"
             />
+            {city && (
+              <button
+                type="button"
+                className="search-clear-btn"
+                aria-label="Clear city"
+                onClick={() => {
+                  setCity("");
+                  setError(null);
+                }}
+              >
+                ✕
+              </button>
+            )}
           </div>
           <button
             onClick={() => {
@@ -270,20 +283,8 @@ function Dashboard() {
       {data && (
         <div className="results-section">
           {/* Search Again Button */}
-          <div className="flex justify-center mb-6">
-            <button
-              onClick={handleSearchAgain}
-              className="search-button"
-              style={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                padding: "12px 32px",
-                fontSize: "16px",
-                fontWeight: "600",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+          <div className="results-header flex justify-center mb-6">
+            <button onClick={handleSearchAgain} className="search-again-button">
               <span>🔍</span>
               Search Another City
             </button>
