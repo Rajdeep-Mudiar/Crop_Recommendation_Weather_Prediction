@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Change this URL to your deployed backend URL after deployment
-const BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
 export const fetchPrediction = async (city, soilData = null) => {
   try {
