@@ -38,6 +38,10 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+
+# Project-specific environments (exclude these folders)
+potato_disease/
+crop_recommendation_weather_prediction/
 *.cover
 *.py,cover
 .hypothesis/
