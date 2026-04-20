@@ -6,8 +6,8 @@ function Navbar() {
     <header className="nk-navbar">
       <div className="nk-container">
         <div className="nk-brand">
-          <span className="nk-logo">🌾</span>
-          <span className="nk-title">SahayaKisan</span>
+          <span className="nk-logo"></span>
+          <span className="nk-title"></span>
         </div>
       </div>
     </header>
