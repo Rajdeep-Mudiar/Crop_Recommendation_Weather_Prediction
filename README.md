@@ -2,6 +2,11 @@
 
 A complete farmer dashboard with ML-powered crop recommendations and weather predictions. Built with FastAPI, React, and TensorFlow.
 
+<p align="center">
+   <img src="assests/1.png" alt="Dashboard Screenshot 1" width="60%"/>
+   <br/>
+   <img src="assests/2.png" alt="Dashboard Screenshot 2" width="60%"/>
+</p>
 ## 🌾 Project Structure
 
 ```
@@ -56,7 +61,6 @@ A complete farmer dashboard with ML-powered crop recommendations and weather pre
    Get a free API key from: https://openweathermap.org/api
 
 4. **Ensure models are in the correct location:**
-
    - Models should be in: `../models/` (relative to backend/)
    - Required files:
      - `crop_recommendation_model.h5`

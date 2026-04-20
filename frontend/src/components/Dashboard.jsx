@@ -17,6 +17,7 @@ function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   const soilTypes = [
     { value: "loamy", label: "🌍 Loamy (Balanced)" },
@@ -40,7 +41,17 @@ function Dashboard() {
     setLoading(false);
 
     if (result && result.error) {
-      setError(result.error);
+      const errorMsg = result.error.toLowerCase();
+      if (
+        errorMsg.includes("city not found") ||
+        errorMsg.includes("not found")
+      ) {
+        setError(
+          `City "${city}" not recognized by weather service. Please try:\n• Using a larger nearby city name\n• Entering the state capital\n• Checking the spelling`,
+        );
+      } else {
+        setError(result.error);
+      }
     } else if (result) {
       setData(result);
     } else {
@@ -75,11 +86,99 @@ function Dashboard() {
     }));
   };
 
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setGettingLocation(true);
+    setError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          // Use OpenStreetMap Nominatim API for reverse geocoding (free, no API key needed)
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`,
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to get location name");
+          }
+
+          const locationData = await response.json();
+
+          // Try to get the most specific location first, then fall back to larger areas
+          // Priority: neighbourhood/suburb -> village -> town -> city -> county -> state_district
+          const cityName =
+            locationData.address.neighbourhood ||
+            locationData.address.suburb ||
+            locationData.address.village ||
+            locationData.address.town ||
+            locationData.address.city ||
+            locationData.address.county ||
+            locationData.address.state_district ||
+            locationData.address.state ||
+            "Unknown";
+
+          // Clean up the city name (remove district suffixes, special characters)
+          const cleanCityName = cityName
+            .replace(/\s+district$/i, "")
+            .replace(/\s+division$/i, "")
+            .trim();
+
+          console.log(
+            "Detected location:",
+            cleanCityName,
+            "from",
+            locationData.address,
+          );
+          console.log("Full address data:", locationData.address);
+
+          setCity(cleanCityName);
+          setGettingLocation(false);
+          // Don't auto-open soil form - let user verify the location first
+        } catch (err) {
+          setError(
+            "Failed to get city name from coordinates. Please enter manually.",
+          );
+          setGettingLocation(false);
+        }
+      },
+      (err) => {
+        setGettingLocation(false);
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            setError(
+              "Location permission denied. Please enable location access.",
+            );
+            break;
+          case err.POSITION_UNAVAILABLE:
+            setError("Location information unavailable.");
+            break;
+          case err.TIMEOUT:
+            setError("Location request timed out.");
+            break;
+          default:
+            setError("An error occurred while getting your location.");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
+  };
+
   return (
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Welcome to SahayaKisan</h1>
+        <h1 className="dashboard-title">Welcome to Crop Recommender</h1>
         <p className="dashboard-subtitle">
           Get AI-powered crop recommendations and weather predictions
         </p>
@@ -98,6 +197,7 @@ function Dashboard() {
               onChange={(e) => setCity(e.target.value)}
               onKeyPress={handleKeyPress}
               className="search-input"
+              disabled={gettingLocation}
             />
             {city && (
               <button
@@ -122,13 +222,74 @@ function Dashboard() {
               setShowSoilForm(true);
             }}
             className="search-button"
+            disabled={gettingLocation}
           >
             Next
+          </button>
+          <button
+            onClick={getCurrentLocation}
+            className="search-button"
+            disabled={gettingLocation}
+            style={{
+              background: gettingLocation ? "#94a3b8" : "#10b981",
+              marginLeft: "0.5rem",
+            }}
+          >
+            {gettingLocation ? (
+              <>
+                <svg
+                  className="spinner"
+                  viewBox="0 0 24 24"
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    marginRight: "8px",
+                    display: "inline-block",
+                  }}
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                    opacity="0.25"
+                  />
+                  <path
+                    fill="currentColor"
+                    opacity="0.75"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Getting Location...
+              </>
+            ) : (
+              <>📍 Use Current Location</>
+            )}
           </button>
         </div>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div
+          className="error-message"
+          style={{
+            whiteSpace: "pre-line",
+            background: error.includes("📍 Location detected")
+              ? "#dbeafe"
+              : "#fee2e2",
+            color: error.includes("📍 Location detected")
+              ? "#1e40af"
+              : "#dc2626",
+            borderLeft: error.includes("📍 Location detected")
+              ? "4px solid #3b82f6"
+              : "4px solid #dc2626",
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       {/* Soil Form Section */}
       {showSoilForm && !data && (
